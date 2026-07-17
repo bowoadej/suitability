@@ -1,0 +1,235 @@
+[
+    {
+        "id": "uniqlo-001",
+        "brand": "Uniqlo",
+        "region": "UK",
+        "url": "https://www.uniqlo.com/uk/en/products/E454312-000/00?colorDisplayCode=02&sizeDisplayCode=004",
+        "title": "AIRism Crew Neck T-Shirt",
+        "description": "Technical performance tee with AIRism fabric (DRY technology), deodorizing/odor control, cool-to-touch, stretch fit. 54% recycled polyester, 34% polyester, 12% elastane.",
+        "size_unit": "inches",
+        "size_chart": {
+            "garment_measurements": {
+                "XS": {
+                    "body_length_back": 26,
+                    "shoulder_width": 15.75,
+                    "body_width": 16.75,
+                    "sleeve_length": 14
+                },
+                "S": {
+                    "body_length_back": 27.25,
+                    "shoulder_width": 16.25,
+                    "body_width": 18,
+                    "sleeve_length": 14.75
+                },
+                "M": {
+                    "body_length_back": 28.25,
+                    "shoulder_width": 17,
+                    "body_width": 19,
+                    "sleeve_length": 15.5
+                },
+                "L": {
+                    "body_length_back": 29.5,
+                    "shoulder_width": 17.75,
+                    "body_width": 20.75,
+                    "sleeve_length": 16.25
+                },
+                "XL": {
+                    "body_length_back": 30.25,
+                    "shoulder_width": 18.5,
+                    "body_width": 22.25,
+                    "sleeve_length": 16.75
+                },
+                "XXL": {
+                    "body_length_back": 30.25,
+                    "shoulder_width": 19.25,
+                    "body_width": 23.75,
+                    "sleeve_length": 17.25
+                },
+                "3XL": {
+                    "body_length_back": 30.5,
+                    "shoulder_width": 20,
+                    "body_width": 25.5,
+                    "sleeve_length": 17.75
+                }
+            },
+            "body_measurements": {
+                "XS": {
+                    "chest": [
+                        31.5,
+                        34.75
+                    ],
+                    "waist": [
+                        26,
+                        28.25
+                    ]
+                },
+                "S": {
+                    "chest": [
+                        34.75,
+                        37.75
+                    ],
+                    "waist": [
+                        26.75,
+                        30
+                    ]
+                },
+                "M": {
+                    "chest": [
+                        37.75,
+                        41
+                    ],
+                    "waist": [
+                        30,
+                        33
+                    ]
+                },
+                "L": {
+                    "chest": [
+                        41,
+                        44
+                    ],
+                    "waist": [
+                        33,
+                        36.25
+                    ]
+                },
+                "XL": {
+                    "chest": [
+                        44,
+                        47.25
+                    ],
+                    "waist": [
+                        36.25,
+                        39.25
+                    ]
+                },
+                "XXL": {
+                    "chest": [
+                        47.25,
+                        50.5
+                    ],
+                    "waist": [
+                        39.25,
+                        42.5
+                    ]
+                },
+                "3XL": {
+                    "chest": [
+                        50.5,
+                        53.5
+                    ],
+                    "waist": [
+                        42.5,
+                        45.75
+                    ]
+                }
+            }
+        }
+    },
+    {
+        "id": "next-001",
+        "brand": "Next",
+        "region": "UK",
+        "url": "https://www.next.co.uk/style/sv185622/530205#530205",
+        "title": "Blue Mid Slim Fit Classic Stretch Jeans",
+        "description": "Slim fit stretch jeans, traditional zip fly, belt loops. 65% cotton, 30% recycled polyester, 3% viscose, 2% elastane.",
+        "size_unit": "inches",
+        "waist_sizes_in": [
+            26,
+            28,
+            30,
+            32,
+            34,
+            36,
+            38,
+            40,
+            42,
+            44,
+            46,
+            48
+        ],
+        "inseam_options": {
+            "Short": 29,
+            "Regular": 31,
+            "Long": 33,
+            "Extra Long": 35
+        },
+        "fit_styles": {
+            "Skinny": "Stretch denim, tight fit from waist to ankle",
+            "Slim": "Fitted through hip and thigh, streamlined leg",
+            "Straight": "Sits at hip, continues straight, looser at calves, slightly relaxed seat",
+            "Regular Tapered": "Regular through hip and thigh, tapers to slim fit at hem",
+            "Relaxed Tapered": "Extra room through hip and thigh, tapered leg at ankle",
+            "Relaxed": "Roomy fit, away from seat/thighs/legs",
+            "Baggy": "Loose, oversized, extra room through waist/seat/legs",
+            "Barrel": "Curves outward through thigh/knee, tapers at ankle",
+            "Bootcut": "Room in seat/thighs, narrows at knee, widens at hem"
+        },
+        "international_size_chart": {
+            "XS": {
+                "UK": 30,
+                "EU": 76,
+                "US": 30,
+                "AU": 76,
+                "JP": 76
+            },
+            "S": {
+                "UK": 32,
+                "EU": 82,
+                "US": 32,
+                "AU": 82,
+                "JP": 82
+            },
+            "M": {
+                "UK": 36,
+                "EU": 92,
+                "US": 36,
+                "AU": 92,
+                "JP": 92
+            },
+            "L": {
+                "UK": 40,
+                "EU": 102,
+                "US": 40,
+                "AU": 102,
+                "JP": 102
+            },
+            "XL": {
+                "UK": 44,
+                "EU": 112,
+                "US": 44,
+                "AU": 112,
+                "JP": 112
+            }
+        }
+    },
+    {
+        "id": "zara-001",
+        "brand": "Zara",
+        "region": "UK",
+        "url": "https://www.zara.com/uk/en/washed-printed-slogan-sweatshirt-p06224413.html",
+        "title": "Washed Printed Slogan Sweatshirt",
+        "description": "Relaxed fit hoodie, 100% cotton with loopback interior, hood, long sleeves, contrast slogan prints, washed effect, ribbed trims",
+        "category": "sweatshirt",
+        "fit_descriptor": "Relaxed fit",
+        "size_chart": "unavailable - not present in static page content, likely loaded dynamically. Do not infer specific measurements; reason only from the relaxed fit descriptor and flag as lower confidence."
+    },
+    {
+        "id": "adidas-001",
+        "brand": "adidas Originals",
+        "retailer": "JD Sports",
+        "region": "UK",
+        "url": "https://www.jdsports.co.uk/product/black-adidas-originals-waffle-t-shirt/19737244/",
+        "title": "adidas Originals Waffle T-Shirt",
+        "description": "Crew neckline, short sleeves, regular fit, waffle knit, 54% recycled polyester / 46% cotton",
+        "category": "t-shirt",
+        "fit_descriptor": "Regular fit",
+        "model_reference": {
+            "height": "6 ft 1 in",
+            "chest": "36 in",
+            "size_worn": "M",
+            "note": "Useful anchor point - model is close to but shorter than the target user's 6 ft 5 in height, so a size up from M may be worth considering for length, though this is an inference, not a stated measurement."
+        },
+        "size_chart": "unavailable - not present in static page content, likely loaded dynamically. Do not infer specific measurements beyond the model reference point above."
+    }
+]

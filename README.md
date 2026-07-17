@@ -34,6 +34,8 @@ The goal of v0 is to prove the reasoning approach works before adding live data 
 3. `match.py` — sends both to the model and asks it to rank products by fit, with reasoning
 4. Output — a ranked markdown list with a one-line rationale per product
 
+A note on uncertainty: rather than requiring every measurement upfront, constraints are layered — required fields first, optional ones added over time. When a recommendation depends on a field that isn't provided, the agent says so and lowers its confidence, instead of silently assuming an average.
+
 ## Stack
 
 Python, Claude API (Anthropic)
@@ -44,6 +46,7 @@ Python, Claude API (Anthropic)
 - [ ] Pull from a live product feed or retailer API
 - [ ] Add purchase journey (pending API creds / env var setup)
 - [ ] Generalize constraint input beyond my own fit profile
+- [ ] Normalize sizing across brands/regions using body measurements rather than label
 
 ## Why This Exists
 

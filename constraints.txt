@@ -1,0 +1,22 @@
+
+# Fit Constraints
+# Fields marked "unknown" are intentionally unspecified — do not assume a default.
+# If a recommendation depends on an unknown field, say so explicitly and lower confidence accordingly.
+ 
+## Required
+Gender: Male
+Height: 6 ft 5 in
+ 
+## Optional — body proportions (fill in over time for more tailored matches)
+Torso length: unknown
+Leg/inseam length: 38 in
+Shoulder width: unknown
+Build: unknown  # e.g. slim, athletic, broad
+ 
+## Known brand/size data (add as you learn more)
+# Format: Brand — Size that fits — Notes
+# e.g. Uniqlo — L — tops fit true to size, sleeves slightly short
+ 
+## Fits to avoid
+# e.g. slim-fit trousers, cropped jackets, skinny sleeves
+ 
