@@ -51,6 +51,7 @@ Python, Claude API (Anthropic)
 - [ ] Pull from a live product feed or retailer API
 - [ ] Add purchase journey (pending API creds / env var setup)
 - [ ] Generalize constraint input beyond my own fit profile
+- [ ] "expand product set to cover all stated avoid-criteria
 
 ## Why This Exists
 

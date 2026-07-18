@@ -1,4 +1,3 @@
-
 # Fit Constraints
 # Fields marked "unknown" are intentionally unspecified — do not assume a default.
 # If a recommendation depends on an unknown field, say so explicitly and lower confidence accordingly.
@@ -16,7 +15,10 @@ Build: unknown  # e.g. slim, athletic, broad
 ## Known brand/size data (add as you learn more)
 # Format: Brand — Size that fits — Notes
 # e.g. Uniqlo — L — tops fit true to size, sleeves slightly short
+Uniqlo — XL
  
 ## Fits to avoid
-# e.g. slim-fit trousers, cropped jackets, skinny sleeves
- 
+Slim-fit trousers
+Skinny-fit (any garment)
+Cropped jackets/tops
+Short sleeves that run tight
