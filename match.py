@@ -124,12 +124,26 @@ def print_results(results):
     print("FIT RECOMMENDATIONS")
     print("=" * 60 + "\n")
 
+    top = rankings[0]
+    if top.get("confidence") == "Low":
+        print("⚠️  Top-ranked item has LOW confidence — this is the best guess")
+        print("   available, not a verified strong match. Read the reasoning")
+        print("   before treating rank #1 as a recommendation.\n")
+
     for r in rankings:
+        confidence = r.get("confidence")
+        marker = {"High": "●●●", "Medium": "●●○", "Low": "●○○"}.get(confidence, "???")
+
         print(f"#{r.get('rank')} - {r.get('product_title')} "
               f"[{r.get('product_id')}]")
-        print(f"Confidence: {r.get('confidence')}")
+        print(f"Confidence: {confidence} {marker}")
         print(f"Reasoning: {r.get('reasoning')}")
         print("-" * 60)
+
+    print("\nNote: rank is the model's best guess at fit. Confidence reflects")
+    print("how much real data supports that guess. A low-ranked item with High")
+    print("confidence (e.g. a confirmed poor match) can be more trustworthy")
+    print("than a top-ranked item with Low confidence.")
 
 
 def main():
