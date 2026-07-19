@@ -6,6 +6,8 @@
         "url": "https://www.uniqlo.com/uk/en/products/E454312-000/00?colorDisplayCode=02&sizeDisplayCode=004",
         "title": "AIRism Crew Neck T-Shirt",
         "description": "Technical performance tee with AIRism fabric (DRY technology), deodorizing/odor control, cool-to-touch, stretch fit. 54% recycled polyester, 34% polyester, 12% elastane.",
+        "category": "t-shirt",
+        "fit_descriptor": "Stretch/athletic fit - close to body but not classified as skinny by the brand",
         "size_unit": "inches",
         "size_chart": {
             "garment_measurements": {
@@ -133,6 +135,7 @@
         "url": "https://www.next.co.uk/style/sv185622/530205#530205",
         "title": "Blue Mid Slim Fit Classic Stretch Jeans",
         "description": "Slim fit stretch jeans, traditional zip fly, belt loops. 65% cotton, 30% recycled polyester, 3% viscose, 2% elastane.",
+        "category": "jeans",
         "size_unit": "inches",
         "waist_sizes_in": [
             26,
@@ -231,5 +234,333 @@
             "note": "Useful anchor point - model is close to but shorter than the target user's 6 ft 5 in height, so a size up from M may be worth considering for length, though this is an inference, not a stated measurement."
         },
         "size_chart": "unavailable - not present in static page content, likely loaded dynamically. Do not infer specific measurements beyond the model reference point above."
+    },
+    {
+        "id": "boohoo-001",
+        "brand": "BoohooMAN",
+        "region": "UK",
+        "url": "https://www.boohoo.com/product/boohooman-regular-western-coated-denim-harrington_cmm04789",
+        "title": "Regular Western Coated Denim Harrington",
+        "description": "Coated denim Harrington jacket, western-style detailing",
+        "category": "jacket",
+        "fit_descriptor": "Labeled 'Regular' fit, but Harrington jackets are a traditionally short, waist-length cut by design - reason about this as a potential match against the 'cropped jackets/tops' avoid constraint even though the word 'cropped' does not appear in the listing.",
+        "size_unit": "inches (converted from UK sizing)",
+        "size_chart": {
+            "chest_by_size": {
+                "XS": 34,
+                "S": 36,
+                "M": 38,
+                "L": 40,
+                "XL": 42,
+                "2XL": 44,
+                "3XL": 46,
+                "4XL": 48,
+                "5XL": 50
+            },
+            "note": "No garment length data available - only chest measurements provided. Body length/torso coverage must be inferred from the Harrington style category, not from stated numbers."
+        }
+    },
+    {
+        "id": "asos-001",
+        "brand": "ASOS Design",
+        "region": "UK",
+        "url": "https://www.asos.com/asos-design/asos-design-muscle-fit-t-shirt-with-henley-neck-in-beige-rib/prd/210883118",
+        "title": "Muscle Fit T-Shirt with Henley Neck",
+        "description": "Ribbed henley neck t-shirt in muscle fit",
+        "category": "t-shirt",
+        "fit_descriptor": "Muscle fit - a very close, tight cut through the body and sleeves, tighter than skinny fit. Likely conflicts with both the 'skinny-fit anything' and 'short sleeves that run tight' avoid constraints.",
+        "size_unit": "inches",
+        "size_chart": {
+            "chest_range_by_size": {
+                "XS": [
+                    33,
+                    34
+                ],
+                "S": [
+                    35,
+                    37
+                ],
+                "M": [
+                    38,
+                    40
+                ],
+                "L": [
+                    42,
+                    44
+                ],
+                "XL": [
+                    46,
+                    48
+                ]
+            },
+            "note": "No sleeve length or body length data provided - reason about sleeve/body tightness from the 'muscle fit' descriptor, not from measurements."
+        }
+    },
+    {
+        "id": "moss-001",
+        "brand": "Moss",
+        "region": "UK",
+        "url": "https://www.moss.co.uk/royal-ascot-regular-fit-houndstooth-trouser-966353577",
+        "title": "Royal Ascot Regular Fit Houndstooth Trouser",
+        "description": "Houndstooth pattern formal trouser, regular fit",
+        "category": "trousers",
+        "fit_descriptor": "Regular fit - not flagged by any stated 'fits to avoid' constraint on fit style.",
+        "size_unit": "inches",
+        "size_chart": {
+            "waist_and_leg_by_size": {
+                "26": {
+                    "garment_waist": 28,
+                    "leg_length": 29
+                },
+                "28": {
+                    "garment_waist": 30,
+                    "leg_length": 29
+                },
+                "30": {
+                    "garment_waist": 31,
+                    "leg_length": 29
+                },
+                "32": {
+                    "garment_waist": 33,
+                    "leg_length": 29
+                },
+                "34": {
+                    "garment_waist": 35,
+                    "leg_length": 29
+                },
+                "36": {
+                    "garment_waist": 37,
+                    "leg_length": 29
+                },
+                "38": {
+                    "garment_waist": 39,
+                    "leg_length": 29
+                },
+                "40": {
+                    "garment_waist": 41,
+                    "leg_length": 29
+                },
+                "42": {
+                    "garment_waist": 43,
+                    "leg_length": 29
+                },
+                "44": {
+                    "garment_waist": 45,
+                    "leg_length": 29
+                },
+                "46": {
+                    "garment_waist": 47,
+                    "leg_length": 29
+                },
+                "48": {
+                    "garment_waist": 49,
+                    "leg_length": 29
+                },
+                "50": {
+                    "garment_waist": 51,
+                    "leg_length": 29
+                },
+                "52": {
+                    "garment_waist": 53,
+                    "leg_length": 29
+                },
+                "54": {
+                    "garment_waist": 55,
+                    "leg_length": 29
+                },
+                "56": {
+                    "garment_waist": 57,
+                    "leg_length": 29
+                }
+            },
+            "note": "Leg length is fixed at 29 inches across every single waist size - this does not scale with size at all."
+        }
+    },
+    {
+        "id": "levis-001",
+        "brand": "Levi's",
+        "retailer": "ASOS (Big & Tall range)",
+        "region": "UK",
+        "url": "https://www.asos.com/levis/levis-big-tall-502-tapered-jeans-in-black/prd/208008977",
+        "title": "502 Tapered Jeans (Big & Tall)",
+        "description": "Tapered fit jeans from Levi's Big & Tall range, designed for larger and taller builds",
+        "category": "jeans",
+        "fit_descriptor": "Tapered fit - not flagged by any stated 'fits to avoid' constraint. This is a Big & Tall range, specifically designed for taller builds, unlike the standard-range products already in this set.",
+        "size_unit": "inches",
+        "size_chart": {
+            "waist_seat_by_size": {
+                "W36 L38": {
+                    "seat": [
+                        42.5,
+                        43.5
+                    ],
+                    "waist": [
+                        36.5,
+                        37.5
+                    ]
+                },
+                "W38 L38": {
+                    "seat": [
+                        44.5,
+                        45.5
+                    ],
+                    "waist": [
+                        38.5,
+                        39.5
+                    ]
+                },
+                "W40 L32": {
+                    "seat": [
+                        46.5,
+                        47.5
+                    ],
+                    "waist": [
+                        40.5,
+                        41.5
+                    ]
+                },
+                "W40 L34": {
+                    "seat": [
+                        46.5,
+                        47.5
+                    ],
+                    "waist": [
+                        40.5,
+                        41.5
+                    ]
+                },
+                "W40 L36": {
+                    "seat": [
+                        46.5,
+                        47.5
+                    ],
+                    "waist": [
+                        40.5,
+                        41.5
+                    ]
+                },
+                "W42 L32": {
+                    "seat": [
+                        48.5,
+                        49.5
+                    ],
+                    "waist": [
+                        42.5,
+                        43.5
+                    ]
+                },
+                "W42 L34": {
+                    "seat": [
+                        48.5,
+                        49.5
+                    ],
+                    "waist": [
+                        42.5,
+                        43.5
+                    ]
+                },
+                "W42 L36": {
+                    "seat": [
+                        48.5,
+                        49.5
+                    ],
+                    "waist": [
+                        42.5,
+                        43.5
+                    ]
+                },
+                "W44 L32": {
+                    "seat": [
+                        50.5,
+                        51.5
+                    ],
+                    "waist": [
+                        44.5,
+                        45.5
+                    ]
+                },
+                "W44 L34": {
+                    "seat": [
+                        50.5,
+                        51.5
+                    ],
+                    "waist": [
+                        44.5,
+                        45.5
+                    ]
+                },
+                "W44 L36": {
+                    "seat": [
+                        50.5,
+                        51.5
+                    ],
+                    "waist": [
+                        44.5,
+                        45.5
+                    ]
+                },
+                "W46 L32": {
+                    "seat": [
+                        52.5,
+                        53.5
+                    ],
+                    "waist": [
+                        46.5,
+                        47.5
+                    ]
+                },
+                "W46 L34": {
+                    "seat": [
+                        52.5,
+                        53.5
+                    ],
+                    "waist": [
+                        46.5,
+                        47.5
+                    ]
+                },
+                "W48 L32": {
+                    "seat": [
+                        54.5,
+                        55.5
+                    ],
+                    "waist": [
+                        48.5,
+                        49.5
+                    ]
+                },
+                "W48 L34": {
+                    "seat": [
+                        54.5,
+                        55.5
+                    ],
+                    "waist": [
+                        48.5,
+                        49.5
+                    ]
+                },
+                "W50 L32": {
+                    "seat": [
+                        56.5,
+                        57.5
+                    ],
+                    "waist": [
+                        50.5,
+                        51.5
+                    ]
+                },
+                "W50 L34": {
+                    "seat": [
+                        56.5,
+                        57.5
+                    ],
+                    "waist": [
+                        50.5,
+                        51.5
+                    ]
+                }
+            },
+            "note": "Only W36 offers the full L38 leg length matching this person's stated 38in inseam exactly - every larger waist size tops out at L32-L36. This person's waist measurement is not stated in their constraints, so it cannot be confirmed whether W36 (the only size with the matching inseam) would also fit the waist. This is a genuine open question, not something to assume either way."
+        }
     }
 ]
