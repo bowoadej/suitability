@@ -1,5 +1,12 @@
+
 # Runtime output - generated each time match.py runs, don't commit test results
 last_results.json
+ 
+# Live feed output - generated fresh each time fetch_feed.py runs against a
+# real API, never a static source of truth. Committing this would mean the
+# repo accumulates stale snapshots and grows unbounded as more shops get added.
+live_products.json
+live_products_*.json
  
 # Environment / secrets - never commit API keys
 .env
