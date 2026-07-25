@@ -22,6 +22,8 @@ import os
 import sys
 import requests
 
+from size_charts import estimate_measurements_for_sizes
+
 SHOP_DOMAIN = os.environ.get("SHOPIFY_SHOP_DOMAIN", "uk.representclo.com")
 API_VERSION = "unstable"
 OUTPUT_FILE = "live_products.json"
@@ -119,6 +121,48 @@ def convert_to_products_schema(shopify_products):
             # truncate at the last space before 300 chars, not mid-word
             description = description[:300].rsplit(" ", 1)[0] + "..."
 
+        category = node.get("productType") or "unknown"
+
+        # Try to enrich label-only sizes with brand-general body-measurement
+        # estimates (see size_charts.py). This is a real published brand
+        # chart, but it's still one level less precise than a garment's own
+        # size chart - callers must treat it as "estimated-measurement"
+        # evidence, not "measurement".
+        size_estimates, chart_used = estimate_measurements_for_sizes(
+            "Represent", category, list(sizes_seen.keys())
+        )
+
+        if size_estimates:
+            size_chart = {
+                "sizes_by_availability": sizes_seen,
+                "estimated_body_measurements": size_estimates,
+                "estimate_source": (
+                    f"Represent's published general '{chart_used}' body-measurement "
+                    f"guide (https://representclo.com/pages/body-measurements), not "
+                    f"this specific garment's own size chart. Treat as "
+                    f"estimated-measurement evidence: real, brand-published numbers, "
+                    f"but not product-specific - actual cut can vary by style."
+                ),
+                "note": (
+                    "Size labels, price, and stock came from the live Shopify "
+                    "Storefront API. Chest/waist ranges came from Represent's general "
+                    "size guide, not this garment's own chart - see estimate_source."
+                ),
+            }
+        else:
+            size_chart = {
+                "sizes_by_availability": sizes_seen,
+                "note": (
+                    "This data came from a live Shopify Storefront API call, not a "
+                    "hand-curated size chart. Only size labels, price, and stock are "
+                    "available - no structured body or garment measurements, and no "
+                    "brand-general size guide match was found for this brand/category. "
+                    "Reason conservatively given this limited data, and flag low "
+                    "confidence where measurement-based reasoning would normally apply "
+                    "- unless the description text happens to state a real measurement."
+                ),
+            }
+
         converted.append({
             "id": f"represent-{product_id}",
             "brand": "Represent",
@@ -128,13 +172,10 @@ def convert_to_products_schema(shopify_products):
             "url": node.get("onlineStoreUrl") or f"https://{SHOP_DOMAIN}/products/{node['handle']}",
             "title": node["title"],
             "description": description,
-            "category": node.get("productType") or "unknown",
+            "category": category,
             "fit_descriptor": "Not provided as a separate structured field by the live API - check the description text for fit language (e.g. 'oversized fit', 'slim', embedded measurements like the waist range sometimes given for a specific size). Do not assume a fit style beyond what the description actually states.",
-            "size_unit": "label only (S/M/L/XL etc.) - no numeric measurements available from this data source, except where a measurement happens to be mentioned in the free-text description",
-            "size_chart": {
-                "sizes_by_availability": sizes_seen,
-                "note": "This data came from a live Shopify Storefront API call, not a hand-curated size chart. Only size labels, price, and stock are available - no structured body or garment measurements. Reason conservatively given this limited data, and flag low confidence where measurement-based reasoning would normally apply - unless the description text happens to state a real measurement.",
-            },
+            "size_unit": "estimated inches (brand-general guide)" if size_estimates else "label only (S/M/L/XL etc.)",
+            "size_chart": size_chart,
             "source_type": "live_api",
         })
 
@@ -159,8 +200,7 @@ def main():
         json.dump(converted, f, indent=2)
 
     print(f"Saved {len(converted)} products to {OUTPUT_FILE}")
-    print("Run match.py against this file to test live-data reasoning "
-          "(you'll need to point PRODUCTS_FILE at it, or merge it into products.json).")
+    print("Run: python match.py --source live   (or --source merged to combine with products.json)")
 
 
 if __name__ == "__main__":

@@ -52,12 +52,18 @@ Rules you must follow:
 4. Give each product a confidence level: High, Medium, or Low - based on
    how much real data supports the recommendation, not on how good the
    match seems.
-5. Give each product an evidence_type: "measurement" if the recommendation
-   is grounded in an actual numeric measurement comparison (body vs garment
-   measurements), or "descriptor" if it rests on fit language / style
-   descriptors / inference with no supporting number. Be consistent: two
-   similarly-evidenced products should not receive different confidence
-   levels without a stated reason for the difference.
+5. Give each product an evidence_type based on what actually backs the
+   recommendation:
+   - "measurement": a real, product-specific garment/body measurement from
+     this exact item's own size chart.
+   - "estimated-measurement": a brand's general published size guide (e.g.
+     chest/waist by size label), which is real brand-provided data but not
+     specific to this exact garment - treat as weaker than "measurement".
+   - "descriptor": fit language, style descriptors, or inference with no
+     numeric backing at all (brand-general or otherwise).
+   Be consistent within each tier: two products with the same evidence_type
+   should not receive different confidence levels without a stated reason
+   for the difference.
 6. Be concise. One short paragraph of reasoning per product, not an essay.
 
 Return your answer as JSON matching this shape:
@@ -68,7 +74,7 @@ Return your answer as JSON matching this shape:
       "product_title": "...",
       "rank": 1,
       "confidence": "High" | "Medium" | "Low",
-      "evidence_type": "measurement" | "descriptor",
+      "evidence_type": "measurement" | "estimated-measurement" | "descriptor",
       "reasoning": "..."
     }
   ]
@@ -199,27 +205,34 @@ def audit_confidence(rankings):
             "products": [top.get("product_id")],
         })
 
-    # Check 2: inconsistent confidence among descriptor-only (non-measurement)
-    # rankings. This is the exact bug documented in the README - two
-    # similarly-evidenced products rated High and Low with no stated reason.
-    inferred_group = [r for r in rankings if r.get("evidence_type") != "measurement"]
-    distinct_confidences = {r.get("confidence") for r in inferred_group}
+    # Check 2: inconsistent confidence within the SAME evidence tier.
+    # Comparing across tiers is what caused a false positive before - a
+    # High-confidence explicit descriptor match and a Low-confidence
+    # missing-data descriptor were both "descriptor" but not comparable.
+    # Grouping by evidence_type keeps the comparison to genuinely
+    # similarly-evidenced products, which is the actual bug this check
+    # targets: two rankings with the SAME kind of backing (or lack of it)
+    # getting different confidence with no stated reason.
+    non_measurement_tiers = ("estimated-measurement", "descriptor")
+    for tier in non_measurement_tiers:
+        tier_group = [r for r in rankings if r.get("evidence_type") == tier]
+        distinct_confidences = {r.get("confidence") for r in tier_group}
 
-    if len(inferred_group) > 1 and len(distinct_confidences) > 1:
-        suspicious_high = [r for r in inferred_group if r.get("confidence") == "High"]
-        if suspicious_high:
-            warnings.append({
-                "type": "inconsistent-inferred-confidence",
-                "message": (
-                    "Multiple descriptor-only (no numeric measurement) rankings "
-                    "have inconsistent confidence levels. The following are rated "
-                    "High despite resting on inference rather than measurement, "
-                    "while other descriptor-only rankings in this result are rated "
-                    "lower - check the reasoning states an actual reason for the "
-                    "difference, not just model inconsistency."
-                ),
-                "products": [r.get("product_id") for r in suspicious_high],
-            })
+        if len(tier_group) > 1 and len(distinct_confidences) > 1:
+            suspicious_high = [r for r in tier_group if r.get("confidence") == "High"]
+            if suspicious_high:
+                warnings.append({
+                    "type": "inconsistent-inferred-confidence",
+                    "message": (
+                        f"Multiple '{tier}' rankings have inconsistent confidence "
+                        f"levels. The following are rated High despite resting on "
+                        f"'{tier}' evidence, while other '{tier}' rankings in this "
+                        f"result are rated lower - check the reasoning states an "
+                        f"actual reason for the difference, not just model "
+                        f"inconsistency."
+                    ),
+                    "products": [r.get("product_id") for r in suspicious_high],
+                })
 
     return warnings
 
