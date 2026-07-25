@@ -26,10 +26,15 @@ A second, earlier catch still holds as supporting evidence: a different pair of 
 
 Also demonstrated: when the same kind of reasoning (a style descriptor implying a fit conflict, with no supporting measurement) showed up in two different products, the agent was initially inconsistent about how confident to be — rating one High and a near-identical case Low with no stated reason for the difference. Tightening the prompt to explicitly distinguish "measurement-backed conflict" from "descriptor-only conflict" fixed this in the next run, with the reasoning now stating *why* two similar-looking conflicts get different confidence levels.
 
-Now running against 8 real products across 6 UK retailers (Uniqlo, Next, Zara, adidas, Boohoo, Moss, ASOS, Levi's/ASOS), still deliberately minimal:
-- Product data is a small, hand-picked static set — no live scraping or retailer API integration yet
+Now running against 8 real products across 6 UK retailers (Uniqlo, Next, Zara, adidas, Boohoo, Moss, ASOS, Levi's/ASOS), plus optional live data:
+- `match.py --source curated` (default) uses the hand-picked static set above
+- `match.py --source live` uses `fetch_feed.py`'s output — a real Shopify store (Represent Clo) via the Storefront API, converted into the same schema
+- `match.py --source merged` runs both together, de-duplicated by product id
+- The agent now also self-checks its own confidence ratings after ranking: it flags a Low-confidence top rank, and flags when two descriptor-only (no numeric measurement) products get inconsistent confidence levels with no stated reason — the exact bug described below, now caught automatically instead of by manual review
 - No purchase/checkout flow
 - Single LLM call, no multi-agent orchestration yet
+
+**A known limitation, found by actually running this against live data:** Represent Clo's Storefront API (the live source currently wired in) essentially never returns numeric garment measurements — only size labels (S/M/L/XL), price, and stock. A real `--source live` run against it returned 9 products, 8 of which scored Low confidence purely because there was no number to reason from, regardless of how well the style otherwise fit. This isn't a matching-quality problem — the reasoning correctly distinguished stated measurements from inference throughout — it's a data-input ceiling. Until sizing normalization (next on the roadmap) can translate label sizes into estimated body measurements, live-sourced results should be expected to cluster near Low confidence even for genuinely good matches.
 
 **A note on uncertainty:** rather than requiring every measurement upfront, constraints are layered — required fields first, optional ones added over time. When a recommendation depends on a field that isn't provided (by the person or the product listing), the agent says so explicitly and lowers its confidence, instead of silently assuming an average.
 
@@ -50,9 +55,9 @@ Python, Claude API (Anthropic)
 
 - [x] Populate "fits to avoid" and known brand/size data — done, and the agent now uses both correctly
 - [x] Expand product set beyond the first 4 hand-picked examples — now at 8, across 6 retailers
-- [ ] Rethink how rank and confidence are displayed together — a top-ranked but low-confidence result can still look stronger than it is; a warning now fires when this happens, but full re-ranking by confidence isn't built yet
+- [x] Rethink how rank and confidence are displayed together — top-rank-Low and inconsistent-inferred-confidence now both fire automatically as warnings; full re-ranking by confidence (vs. just flagging) still not built
+- [x] Pull from a live product feed or retailer API — `fetch_feed.py` (Shopify Storefront API) wired into `match.py` via `--source live` / `--source merged`
 - [ ] Normalize sizing across brands/regions using body measurements rather than label size (L, M, etc.)
-- [ ] Pull from a live product feed or retailer API
 - [ ] Add purchase journey (pending API creds / env var setup)
 - [ ] Generalize constraint input beyond my own fit profile
 
