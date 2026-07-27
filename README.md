@@ -56,6 +56,10 @@ Python, Claude API (Anthropic)
 - [ ] Orchestrate constraint-gathering, live-feed fetching, and matching as separate agents (CrewAI or LangChain), using [known-unknowns](https://github.com/bowoadej/known-unknowns) as the matching agent's core reasoning layer — this is the actual substance behind "building agentic commerce tools with LangChain/CrewAI," not yet reflected in the code
 - [ ] Add purchase journey (pending API creds / env var setup)
 - [ ] Generalize constraint input beyond my own fit profile
+- [ ] Explore composite/multi-item suitability — right now this only reasons about one product at a time; some real purchases involve tradeoffs across multiple linked decisions (e.g. a venue booking that affects a separate catering budget), which is a genuinely different, harder problem
+- [ ] Explore a trust/stakes tier — low-stakes matches could reasonably auto-proceed, higher-stakes or higher-cost ones probably need a human to confirm before anything happens. No design work done on this yet, just a direction worth thinking through
+
+Longer-term, more speculative ideas that are further from being built live in [`docs/vision.md`](./docs/vision.md).
 
 ## Why This Exists
 
