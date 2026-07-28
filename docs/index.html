@@ -3,9 +3,12 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>PyScript Setup</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suitability Demo</title>
+    <!-- PyScript CDN -->
     <link rel="stylesheet" href="https://pyscript.net/releases/2026.7.2/core.css" />
     <script type="module" src="https://pyscript.net/releases/2026.7.2/core.js"></script>
+
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -34,13 +37,20 @@
         }
 
         input[type="password"],
-        input[type="text"] {
+        input[type="text"],
+        textarea {
             width: 100%;
             padding: 8px 12px;
             border: 1px solid #d1d5da;
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 14px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
         }
 
         button {
@@ -52,6 +62,10 @@
             cursor: pointer;
             font-weight: 600;
             font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #2c974b;
         }
 
         button:disabled {
@@ -88,18 +102,39 @@
         }
     </style>
 </head>
-</head>
 
 <body>
-    <h1>Suitability Demo</h1>
+    <div class="card">
+        <h1>Suitability Demo</h1>
+        <p>An agent that decides if a product fits you — not the other way around.</p>
 
-    <p>Suitability is a An agent that decides if a product fits you — not the other way around.</p>
+        <div class="badge">
+            🔒 API keys are stored in browser memory and never saved.
+        </div>
 
+        <div class="form-group">
+            <label for="apiKey">Anthropic API Key:</label>
+            <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
+        </div>
+
+        <div class="form-group">
+            <label for="inputData">Product / User Specs:</label>
+            <textarea id="inputData" placeholder="Enter specs or criteria to evaluate..."></textarea>
+        </div>
+
+        <button id="runBtn">Run Match</button>
+
+        <h3>Output</h3>
+        <pre id="output">Result will appear here...</pre>
+    </div>
+
+    <!-- Python execution placeholder -->
     <script type="py">
-    from pyscript import display
-    import sys
+        from pyscript import display
 
-    display(f"Placeholder for Suitability Application")
-  </script>
+        # TODO: Implement your match.py logic here or import remote dependencies
+        display("Placeholder for Suitability Application", target="output")
+    </script>
+</body>
 
 </html>
