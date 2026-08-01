@@ -48,6 +48,15 @@
             font-family: inherit;
         }
 
+        input[type="password"]:focus,
+        input[type="text"]:focus,
+        textarea:focus,
+        button:focus-visible,
+        summary:focus-visible {
+            outline: 2px solid #2ea44f;
+            outline-offset: 1px;
+        }
+
         textarea {
             resize: vertical;
             min-height: 100px;
@@ -64,7 +73,7 @@
             font-size: 14px;
         }
 
-        button:hover {
+        button:hover:not(:disabled) {
             background-color: #2c974b;
         }
 
@@ -76,18 +85,8 @@
         #status {
             font-size: 0.9em;
             color: #586069;
-            margin-bottom: 16px;
-        }
-
-        pre {
-            background: #f6f8fa;
-            border: 1px solid #e1e4e8;
-            padding: 16px;
-            border-radius: 6px;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            min-height: 80px;
+            margin: 12px 0 0 0;
+            min-height: 1.2em;
         }
 
         .badge {
@@ -100,6 +99,105 @@
             font-size: 12px;
             margin-bottom: 16px;
         }
+
+        details {
+            margin-bottom: 20px;
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 10px 14px;
+        }
+
+        summary {
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .product-list {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #586069;
+        }
+
+        .product-list li {
+            margin-bottom: 4px;
+        }
+
+        #output {
+            margin-top: 8px;
+        }
+
+        .empty-state {
+            color: #6a737d;
+            font-style: italic;
+        }
+
+        .warning-banner {
+            background: #fff5f5;
+            border: 1px solid #f0b4b4;
+            color: #86181d;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .result-card {
+            border: 1px solid #e1e4e8;
+            border-radius: 6px;
+            padding: 14px 16px;
+            margin-bottom: 12px;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 6px;
+            gap: 8px;
+        }
+
+        .result-title {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .confidence-badge {
+            font-size: 12px;
+            white-space: nowrap;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
+        }
+
+        .confidence-high {
+            background: #dafbe1;
+            color: #116329;
+        }
+
+        .confidence-medium {
+            background: #fff8c5;
+            color: #735c0f;
+        }
+
+        .confidence-low {
+            background: #ffebe9;
+            color: #86181d;
+        }
+
+        .result-reasoning {
+            font-size: 13px;
+            color: #444d56;
+        }
+
+        .error-box {
+            background: #ffebe9;
+            border: 1px solid #f0b4b4;
+            color: #86181d;
+            border-radius: 6px;
+            padding: 12px 14px;
+            font-size: 13px;
+        }
     </style>
 </head>
 
@@ -109,31 +207,289 @@
         <p>An agent that decides if a product fits you — not the other way around.</p>
 
         <div class="badge">
-            🔒 API keys are stored in browser memory and never saved.
+            🔒 Your API key is used only to call Anthropic's API directly from your browser. It is never sent
+            anywhere else, never logged, and disappears when you close this tab.
         </div>
 
         <div class="form-group">
-            <label for="apiKey">Anthropic API Key:</label>
+            <label for="apiKey">Anthropic API Key</label>
             <input type="password" id="apiKey" placeholder="sk-ant-api03-..." autocomplete="off">
         </div>
 
         <div class="form-group">
-            <label for="inputData">Product / User Specs:</label>
-            <textarea id="inputData" placeholder="Enter specs or criteria to evaluate..."></textarea>
+            <label for="inputData">Your fit constraints</label>
+            <textarea id="inputData" placeholder="e.g. Height: 6'5&quot;, inseam 38in, avoid slim-fit trousers">Height: 6'2&quot;
+Avoid: slim-fit trousers, skinny-fit anything
+Known brand fit: Uniqlo — L</textarea>
         </div>
 
+        <details>
+            <summary>Candidate products in this demo (4)</summary>
+            <ul class="product-list" id="productList"></ul>
+            <p class="product-list">
+                This is a small, fixed demo set. The full project reasons over a larger,
+                growing set of real products — see the
+                <a href="https://github.com/bowoadej/suitability" target="_blank" rel="noopener">repo</a> for that.
+            </p>
+        </details>
+
         <button id="runBtn">Run Match</button>
+        <p id="status"></p>
 
         <h3>Output</h3>
-        <pre id="output">Result will appear here...</pre>
+        <div id="output">
+            <p class="empty-state">Result will appear here...</p>
+        </div>
     </div>
 
-    <!-- Python execution placeholder -->
     <script type="py">
-        from pyscript import display
+        import json
+        from pyodide.http import pyfetch
+        from pyodide.ffi import create_proxy
+        from pyscript import document
 
-        # TODO: Implement your match.py logic here or import remote dependencies
-        display("Placeholder for Suitability Application", target="output")
+        # Small, fixed demo set - a subset of the real products.json in the repo,
+        # kept small here so the demo runs fast and cheap for anyone trying it.
+        CANDIDATES = [
+            {
+                "id": "uniqlo-001",
+                "brand": "Uniqlo",
+                "title": "AIRism Crew Neck T-Shirt",
+                "description": "Technical performance tee, stretch fit, moisture-wicking.",
+                "fit_descriptor": "Stretch/athletic fit, close to body but not classified as skinny.",
+                "size_chart_note": "At XL: back length 30.25in, sleeve length 16.75in, chest 44-47.25in.",
+            },
+            {
+                "id": "next-001",
+                "brand": "Next",
+                "title": "Blue Mid Slim Fit Classic Stretch Jeans",
+                "description": "Slim fit stretch jeans, traditional zip fly.",
+                "fit_descriptor": "Slim fit - fitted through hip and thigh, streamlined leg.",
+                "size_chart_note": "Longest available inseam is 35in (Extra Long).",
+            },
+            {
+                "id": "levis-001",
+                "brand": "Levi's (Big & Tall range)",
+                "title": "502 Tapered Jeans",
+                "description": "Tapered fit jeans designed for taller and larger builds.",
+                "fit_descriptor": "Tapered fit - not a slim or skinny cut.",
+                "size_chart_note": "Only W36 offers the longest available leg length (L38); larger waists top out shorter.",
+            },
+            {
+                "id": "moss-001",
+                "brand": "Moss",
+                "title": "Royal Ascot Regular Fit Houndstooth Trouser",
+                "description": "Formal houndstooth trouser, regular fit.",
+                "fit_descriptor": "Regular fit - no conflict with slim/skinny avoid rules.",
+                "size_chart_note": "Leg length is fixed at 29in across every waist size - does not scale with size.",
+            },
+        ]
+
+        SYSTEM_PROMPT = """You are a fit-matching assistant. You are given a person's
+fit constraints in plain language, and a list of candidate products with
+whatever size/fit data is available for each.
+
+Your job: rank the products from best to worst fit for this specific person,
+and explain your reasoning for each one.
+
+Rules you must follow:
+1. Never silently assume a default value for a missing measurement. If a
+   recommendation depends on a field that isn't mentioned, say so explicitly
+   in your reasoning and lower your confidence for that recommendation.
+2. Distinguish between what you know (stated measurements, stated
+   constraints) and what you're inferring (e.g. reasoning from a style
+   descriptor or category name). Label inferences as inferences.
+3. If a product conflicts with a stated avoid constraint, flag that clearly.
+   A conflict confirmed by an actual measurement can be High confidence. A
+   conflict inferred only from a style descriptor, with no supporting
+   measurement, should generally be Medium confidence, not High - unless the
+   descriptor is unambiguous (e.g. "slim fit" is unambiguous).
+4. Give each product a confidence level: High, Medium, or Low - based on how
+   much real data supports the recommendation, not on how good the match
+   seems.
+5. Be concise. One short paragraph of reasoning per product.
+
+Return your answer as JSON matching this shape:
+{
+  "rankings": [
+    {
+      "product_id": "...",
+      "product_title": "...",
+      "rank": 1,
+      "confidence": "High" | "Medium" | "Low",
+      "reasoning": "..."
+    }
+  ]
+}
+
+Return ONLY the JSON, no other text, no markdown code fences."""
+
+
+        def render_product_list():
+            list_el = document.getElementById("productList")
+            list_el.innerHTML = ""
+            for c in CANDIDATES:
+                li = document.createElement("li")
+                li.textContent = f"{c['brand']} — {c['title']}"
+                list_el.appendChild(li)
+
+        render_product_list()
+
+
+        def set_status(message):
+            document.getElementById("status").textContent = message
+
+
+        def confidence_class(confidence):
+            return {
+                "High": "confidence-high",
+                "Medium": "confidence-medium",
+                "Low": "confidence-low",
+            }.get(confidence, "confidence-medium")
+
+
+        def render_error(message):
+            output = document.getElementById("output")
+            output.innerHTML = ""
+            box = document.createElement("div")
+            box.className = "error-box"
+            box.textContent = message
+            output.appendChild(box)
+
+
+        def render_results(rankings):
+            output = document.getElementById("output")
+            output.innerHTML = ""
+
+            if not rankings:
+                render_error("The model didn't return any rankings. Try again.")
+                return
+
+            rankings = sorted(rankings, key=lambda r: r.get("rank", 999))
+
+            top = rankings[0]
+            if top.get("confidence") == "Low":
+                banner = document.createElement("div")
+                banner.className = "warning-banner"
+                banner.textContent = (
+                    "⚠️ The top-ranked result has LOW confidence — this is the model's "
+                    "best guess, not a verified strong match. Read the reasoning before "
+                    "treating rank #1 as a recommendation."
+                )
+                output.appendChild(banner)
+
+            for r in rankings:
+                card = document.createElement("div")
+                card.className = "result-card"
+
+                header = document.createElement("div")
+                header.className = "result-header"
+
+                title = document.createElement("span")
+                title.className = "result-title"
+                title.textContent = f"#{r.get('rank')} {r.get('product_title', '')}"
+
+                badge = document.createElement("span")
+                confidence = r.get("confidence", "Medium")
+                badge.className = f"confidence-badge {confidence_class(confidence)}"
+                badge.textContent = confidence
+
+                header.appendChild(title)
+                header.appendChild(badge)
+
+                reasoning = document.createElement("div")
+                reasoning.className = "result-reasoning"
+                reasoning.textContent = r.get("reasoning", "")
+
+                card.appendChild(header)
+                card.appendChild(reasoning)
+                output.appendChild(card)
+
+
+        async def run_match(event):
+            run_btn = document.getElementById("runBtn")
+            api_key = document.getElementById("apiKey").value.strip()
+            constraints = document.getElementById("inputData").value.strip()
+
+            if not api_key:
+                render_error("Enter your Anthropic API key first.")
+                return
+            if not constraints:
+                render_error("Enter your fit constraints first.")
+                return
+
+            run_btn.disabled = True
+            set_status("Calling Claude...")
+            document.getElementById("output").innerHTML = ""
+
+            user_prompt = f"""FIT CONSTRAINTS:
+{constraints}
+
+CANDIDATE PRODUCTS:
+{json.dumps(CANDIDATES, indent=2)}
+
+Rank these products by fit for this person and explain your reasoning,
+following the rules in your instructions."""
+
+            payload = {
+                "model": "claude-sonnet-5",
+                "max_tokens": 2000,
+                "system": SYSTEM_PROMPT,
+                "messages": [{"role": "user", "content": user_prompt}],
+            }
+
+            headers = {
+                "x-api-key": api_key,
+                "anthropic-version": "2023-06-01",
+                "content-type": "application/json",
+                "anthropic-dangerous-direct-browser-access": "true",
+            }
+
+            try:
+                response = await pyfetch(
+                    "https://api.anthropic.com/v1/messages",
+                    method="POST",
+                    headers=headers,
+                    body=json.dumps(payload),
+                )
+
+                if response.status != 200:
+                    error_body = await response.string()
+                    render_error(f"API error ({response.status}): {error_body[:300]}")
+                    set_status("")
+                    return
+
+                data = await response.json()
+                data = data.to_py()
+
+                raw_text = data["content"][0]["text"].strip()
+                if raw_text.startswith("```"):
+                    raw_text = raw_text.strip("`")
+                    if raw_text.startswith("json"):
+                        raw_text = raw_text[4:].strip()
+
+                try:
+                    parsed = json.loads(raw_text)
+                except json.JSONDecodeError:
+                    render_error(
+                        "The model's response wasn't valid JSON. Raw response logged "
+                        "to the browser console."
+                    )
+                    print(raw_text)
+                    set_status("")
+                    return
+
+                render_results(parsed.get("rankings", []))
+                set_status("Done.")
+
+            except Exception as e:
+                render_error(f"Request failed: {e}")
+                set_status("")
+            finally:
+                run_btn.disabled = False
+
+
+        document.getElementById("runBtn").addEventListener("click", create_proxy(run_match))
     </script>
 </body>
 
