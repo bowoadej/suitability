@@ -234,6 +234,8 @@ Known brand fit: Uniqlo — L</textarea>
         </details>
 
         <button id="runBtn">Run Match</button>
+        <button id="sampleBtn" style="background-color: #586069; margin-left: 8px;">View sample result (no API key
+            needed)</button>
         <p id="status"></p>
 
         <h3>Output</h3>
@@ -247,6 +249,41 @@ Known brand fit: Uniqlo — L</textarea>
         from pyodide.http import pyfetch
         from pyodide.ffi import create_proxy
         from pyscript import document
+
+        # A real, previously-captured run - not live, no API key needed. This is the
+        # actual output from testing this project's reasoning against a real product
+        # (Levi's 502 Big & Tall jeans) where the only size with the right leg length
+        # didn't have the right waist, and vice versa - no single size satisfied both
+        # constraints at once, and the agent caught this by reasoning about the two
+        # together rather than checking them one at a time.
+        SAMPLE_RESULT = [
+            {
+                "product_title": "502 Tapered Jeans (Big & Tall) - Levi's",
+                "rank": 1,
+                "confidence": "Medium",
+                "reasoning": (
+                    "Best jeans candidate by design intent - Big & Tall range built for "
+                    "taller builds, tapered fit is not flagged in fits-to-avoid, and the "
+                    "38in inseam is directly available. However, the only size carrying "
+                    "L38 is W36, and this person's waist is stated as 42in, meaning W36 "
+                    "would be far too small. The larger waist sizes only go up to L36, "
+                    "falling 2in short of the stated 38in inseam. This is a genuine "
+                    "conflict: no single size in this chart satisfies both the 42in "
+                    "waist and 38in inseam simultaneously."
+                ),
+            },
+            {
+                "product_title": "Royal Ascot Regular Fit Houndstooth Trouser - Moss",
+                "rank": 2,
+                "confidence": "High",
+                "reasoning": (
+                    "The 42in waist maps well to this size. However, the leg length is "
+                    "fixed at 29in across every size in the chart - a hard disqualifier "
+                    "for a 38in inseam, roughly 9in too short. This measurement conflict "
+                    "is definitive, so confidence is High despite the good waist match."
+                ),
+            },
+        ]
 
         # Small, fixed demo set - a subset of the real products.json in the repo,
         # kept small here so the demo runs fast and cheap for anyone trying it.
@@ -357,7 +394,7 @@ Return ONLY the JSON, no other text, no markdown code fences."""
             output.appendChild(box)
 
 
-        def render_results(rankings):
+        def render_results(rankings, is_sample=False):
             output = document.getElementById("output")
             output.innerHTML = ""
 
@@ -366,6 +403,21 @@ Return ONLY the JSON, no other text, no markdown code fences."""
                 return
 
             rankings = sorted(rankings, key=lambda r: r.get("rank", 999))
+
+            if is_sample:
+                sample_banner = document.createElement("div")
+                sample_banner.style.background = "#eef1f4"
+                sample_banner.style.border = "1px solid #d1d5da"
+                sample_banner.style.color = "#444d56"
+                sample_banner.style.borderRadius = "6px"
+                sample_banner.style.padding = "10px 14px"
+                sample_banner.style.fontSize = "13px"
+                sample_banner.style.marginBottom = "16px"
+                sample_banner.textContent = (
+                    "📋 This is a real, previously-captured result — not a live call, "
+                    "no API key was used."
+                )
+                output.appendChild(sample_banner)
 
             top = rankings[0]
             if top.get("confidence") == "Low":
@@ -454,15 +506,42 @@ following the rules in your instructions."""
                 )
 
                 if response.status != 200:
-                    error_body = await response.string()
+                    error_body = await response.text()
                     render_error(f"API error ({response.status}): {error_body[:300]}")
                     set_status("")
                     return
 
                 data = await response.json()
-                data = data.to_py()
+                if hasattr(data, "to_py"):
+                    data = data.to_py()
 
-                raw_text = data["content"][0]["text"].strip()
+                content_blocks = data.get("content", [])
+                if not content_blocks:
+                    render_error(
+                        "The API response had no content. Raw response logged to "
+                        "the browser console (press F12 to view)."
+                    )
+                    print("Full response:", data)
+                    set_status("")
+                    return
+
+                text_block = None
+                for block in content_blocks:
+                    block_type = block.get("type") if hasattr(block, "get") else None
+                    if block_type == "text":
+                        text_block = block
+                        break
+
+                if text_block is None:
+                    render_error(
+                        "Couldn't find a text block in the response. Raw response "
+                        "logged to the browser console (press F12 to view)."
+                    )
+                    print("Full response:", data)
+                    set_status("")
+                    return
+
+                raw_text = text_block["text"].strip()
                 if raw_text.startswith("```"):
                     raw_text = raw_text.strip("`")
                     if raw_text.startswith("json"):
@@ -483,13 +562,20 @@ following the rules in your instructions."""
                 set_status("Done.")
 
             except Exception as e:
-                render_error(f"Request failed: {e}")
+                render_error(f"Request failed: {type(e).__name__}: {e}. Full details logged to the browser console (press F12 to view).")
+                print("Exception details:", repr(e))
                 set_status("")
             finally:
                 run_btn.disabled = False
 
 
+        def show_sample(event):
+            set_status("")
+            render_results(SAMPLE_RESULT, is_sample=True)
+
+
         document.getElementById("runBtn").addEventListener("click", create_proxy(run_match))
+        document.getElementById("sampleBtn").addEventListener("click", create_proxy(show_sample))
     </script>
 </body>
 

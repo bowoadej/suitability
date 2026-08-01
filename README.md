@@ -58,8 +58,7 @@ Python, Claude API (Anthropic)
 - [ ] Generalize constraint input beyond my own fit profile
 - [ ] Explore composite/multi-item suitability — right now this only reasons about one product at a time; some real purchases involve tradeoffs across multiple linked decisions (e.g. a venue booking that affects a separate catering budget), which is a genuinely different, harder problem
 - [ ] Explore a trust/stakes tier — low-stakes matches could reasonably auto-proceed, higher-stakes or higher-cost ones probably need a human to confirm before anything happens. No design work done on this yet, just a direction worth thinking through
-
-Longer-term, more speculative ideas that are further from being built live in [`docs/vision.md`](./docs/vision.md).
+- [ ] Reduce demo friction — the live browser demo currently requires visitors to bring their own Anthropic API key, which is a real barrier for someone just evaluating the repo. A static sample result now covers that for casual browsing, but the real fix is a lightweight backend proxy with rate limiting and response caching, so the demo can run live without depending on a visitor's own key or risking runaway API costs on mine. Not built yet - the static sample was the fast, honest interim fix
 
 ## Why This Exists
 
