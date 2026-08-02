@@ -82,6 +82,19 @@
             cursor: not-allowed;
         }
 
+        button.secondary {
+            background-color: #586069;
+        }
+
+        button.secondary:hover:not(:disabled) {
+            background-color: #444d56;
+        }
+
+        button.small {
+            padding: 4px 10px;
+            font-size: 12px;
+        }
+
         #status {
             font-size: 0.9em;
             color: #586069;
@@ -117,10 +130,96 @@
             margin-top: 10px;
             font-size: 13px;
             color: #586069;
+            padding-left: 20px;
         }
 
         .product-list li {
             margin-bottom: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .product-list li span {
+            flex: 1;
+        }
+
+        .remove-link {
+            color: #cf222e;
+            cursor: pointer;
+            font-size: 12px;
+            background: none;
+            border: none;
+            padding: 0;
+            font-weight: 600;
+        }
+
+        .add-product-form {
+            margin-top: 14px;
+            padding-top: 14px;
+            border-top: 1px solid #e1e4e8;
+        }
+
+        .add-product-form .form-row {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .add-product-form input {
+            font-size: 13px;
+            padding: 6px 8px;
+        }
+
+        .field-label {
+            font-size: 11px;
+            color: #6a737d;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .button-row {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+            flex-wrap: wrap;
+        }
+
+        .dev-toggle-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
+            font-size: 13px;
+        }
+
+        #devPanel {
+            display: none;
+            margin-top: 12px;
+        }
+
+        #devPanel h4 {
+            font-size: 13px;
+            margin: 14px 0 4px 0;
+            color: #24292e;
+        }
+
+        #devPanel h4:first-child {
+            margin-top: 0;
+        }
+
+        #devPanel pre {
+            background: #f6f8fa;
+            border: 1px solid #e1e4e8;
+            padding: 12px;
+            border-radius: 6px;
+            overflow-x: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-size: 12px;
+            max-height: 300px;
+            overflow-y: auto;
         }
 
         #output {
@@ -136,6 +235,16 @@
             background: #fff5f5;
             border: 1px solid #f0b4b4;
             color: #86181d;
+            border-radius: 6px;
+            padding: 10px 14px;
+            font-size: 13px;
+            margin-bottom: 16px;
+        }
+
+        .sample-banner {
+            background: #eef1f4;
+            border: 1px solid #d1d5da;
+            color: #444d56;
             border-radius: 6px;
             padding: 10px 14px;
             font-size: 13px;
@@ -223,19 +332,69 @@ Avoid: slim-fit trousers, skinny-fit anything
 Known brand fit: Uniqlo — L</textarea>
         </div>
 
-        <details>
-            <summary>Candidate products in this demo (4)</summary>
+        <details open>
+            <summary>Candidate products in this demo (<span id="productCount">4</span>)</summary>
             <ul class="product-list" id="productList"></ul>
-            <p class="product-list">
-                This is a small, fixed demo set. The full project reasons over a larger,
+
+            <div class="add-product-form">
+                <p class="field-label" style="margin-bottom: 8px;">Add your own product to test against — no
+                    JSON required:</p>
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <span class="field-label">Brand</span>
+                        <input type="text" id="addBrand" placeholder="e.g. Zara">
+                    </div>
+                    <div style="flex: 1;">
+                        <span class="field-label">Title</span>
+                        <input type="text" id="addTitle" placeholder="e.g. Oversized Hoodie">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <span class="field-label">Description</span>
+                        <input type="text" id="addDescription" placeholder="e.g. Relaxed fit, cotton blend">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div style="flex: 1;">
+                        <span class="field-label">Fit descriptor</span>
+                        <input type="text" id="addFit" placeholder="e.g. Slim fit / Relaxed fit / etc.">
+                    </div>
+                    <div style="flex: 1;">
+                        <span class="field-label">Size chart note (optional)</span>
+                        <input type="text" id="addSizeNote" placeholder="e.g. Longest inseam is 34in">
+                    </div>
+                </div>
+                <div class="button-row">
+                    <button id="addProductBtn" class="small">Add product</button>
+                    <button id="resetProductsBtn" class="secondary small">Reset to defaults</button>
+                </div>
+            </div>
+
+            <p class="product-list" style="margin-top: 14px;">
+                This starts with a small, fixed demo set. The full project reasons over a larger,
                 growing set of real products — see the
                 <a href="https://github.com/bowoadej/suitability" target="_blank" rel="noopener">repo</a> for that.
             </p>
         </details>
 
+        <div class="dev-toggle-row">
+            <input type="checkbox" id="devMode">
+            <label for="devMode" style="display: inline; margin: 0; font-weight: 600;">Developer mode — show
+                the underlying data model (JSON)</label>
+        </div>
+
+        <div id="devPanel">
+            <h4>Candidate products (as sent to the model)</h4>
+            <pre id="candidatesJsonPre"></pre>
+            <h4>System prompt (the actual reasoning rules)</h4>
+            <pre id="systemPromptPre"></pre>
+            <h4>Last request/response exchange</h4>
+            <pre id="lastExchangePre">No request made yet.</pre>
+        </div>
+
         <button id="runBtn">Run Match</button>
-        <button id="sampleBtn" style="background-color: #586069; margin-left: 8px;">View sample result (no API key
-            needed)</button>
+        <button id="sampleBtn" class="secondary">View sample result (no API key needed)</button>
         <p id="status"></p>
 
         <h3>Output</h3>
@@ -250,44 +409,10 @@ Known brand fit: Uniqlo — L</textarea>
         from pyodide.ffi import create_proxy
         from pyscript import document
 
-        # A real, previously-captured run - not live, no API key needed. This is the
-        # actual output from testing this project's reasoning against a real product
-        # (Levi's 502 Big & Tall jeans) where the only size with the right leg length
-        # didn't have the right waist, and vice versa - no single size satisfied both
-        # constraints at once, and the agent caught this by reasoning about the two
-        # together rather than checking them one at a time.
-        SAMPLE_RESULT = [
-            {
-                "product_title": "502 Tapered Jeans (Big & Tall) - Levi's",
-                "rank": 1,
-                "confidence": "Medium",
-                "reasoning": (
-                    "Best jeans candidate by design intent - Big & Tall range built for "
-                    "taller builds, tapered fit is not flagged in fits-to-avoid, and the "
-                    "38in inseam is directly available. However, the only size carrying "
-                    "L38 is W36, and this person's waist is stated as 42in, meaning W36 "
-                    "would be far too small. The larger waist sizes only go up to L36, "
-                    "falling 2in short of the stated 38in inseam. This is a genuine "
-                    "conflict: no single size in this chart satisfies both the 42in "
-                    "waist and 38in inseam simultaneously."
-                ),
-            },
-            {
-                "product_title": "Royal Ascot Regular Fit Houndstooth Trouser - Moss",
-                "rank": 2,
-                "confidence": "High",
-                "reasoning": (
-                    "The 42in waist maps well to this size. However, the leg length is "
-                    "fixed at 29in across every size in the chart - a hard disqualifier "
-                    "for a 38in inseam, roughly 9in too short. This measurement conflict "
-                    "is definitive, so confidence is High despite the good waist match."
-                ),
-            },
-        ]
-
         # Small, fixed demo set - a subset of the real products.json in the repo,
         # kept small here so the demo runs fast and cheap for anyone trying it.
-        CANDIDATES = [
+        # Reviewers can also add their own products via the form in the UI.
+        DEFAULT_CANDIDATES = [
             {
                 "id": "uniqlo-001",
                 "brand": "Uniqlo",
@@ -319,6 +444,44 @@ Known brand fit: Uniqlo — L</textarea>
                 "description": "Formal houndstooth trouser, regular fit.",
                 "fit_descriptor": "Regular fit - no conflict with slim/skinny avoid rules.",
                 "size_chart_note": "Leg length is fixed at 29in across every waist size - does not scale with size.",
+            },
+        ]
+
+        # The live, mutable candidate list actually used for matching - starts as a
+        # copy of the defaults, and can be edited via the "Add your own product" form.
+        CANDIDATES = [dict(c) for c in DEFAULT_CANDIDATES]
+
+        # Populated after each live run, so Developer mode can show exactly what was
+        # sent and what came back - not a summary, the real exchange.
+        LAST_REQUEST = None
+        LAST_RESPONSE = None
+
+        SAMPLE_RESULT = [
+            {
+                "product_title": "502 Tapered Jeans (Big & Tall) - Levi's",
+                "rank": 1,
+                "confidence": "Medium",
+                "reasoning": (
+                    "Best jeans candidate by design intent - Big & Tall range built for "
+                    "taller builds, tapered fit is not flagged in fits-to-avoid, and the "
+                    "38in inseam is directly available. However, the only size carrying "
+                    "L38 is W36, and this person's waist is stated as 42in, meaning W36 "
+                    "would be far too small. The larger waist sizes only go up to L36, "
+                    "falling 2in short of the stated 38in inseam. This is a genuine "
+                    "conflict: no single size in this chart satisfies both the 42in "
+                    "waist and 38in inseam simultaneously."
+                ),
+            },
+            {
+                "product_title": "Royal Ascot Regular Fit Houndstooth Trouser - Moss",
+                "rank": 2,
+                "confidence": "High",
+                "reasoning": (
+                    "The 42in waist maps well to this size. However, the leg length is "
+                    "fixed at 29in across every size in the chart - a hard disqualifier "
+                    "for a 38in inseam, roughly 9in too short. This measurement conflict "
+                    "is definitive, so confidence is High despite the good waist match."
+                ),
             },
         ]
 
@@ -362,17 +525,6 @@ Return your answer as JSON matching this shape:
 Return ONLY the JSON, no other text, no markdown code fences."""
 
 
-        def render_product_list():
-            list_el = document.getElementById("productList")
-            list_el.innerHTML = ""
-            for c in CANDIDATES:
-                li = document.createElement("li")
-                li.textContent = f"{c['brand']} — {c['title']}"
-                list_el.appendChild(li)
-
-        render_product_list()
-
-
         def set_status(message):
             document.getElementById("status").textContent = message
 
@@ -383,6 +535,93 @@ Return ONLY the JSON, no other text, no markdown code fences."""
                 "Medium": "confidence-medium",
                 "Low": "confidence-low",
             }.get(confidence, "confidence-medium")
+
+
+        def make_remove_handler(candidate_id):
+            def handler(event):
+                remove_product(candidate_id)
+            return handler
+
+
+        def render_product_list():
+            list_el = document.getElementById("productList")
+            list_el.innerHTML = ""
+            for c in CANDIDATES:
+                li = document.createElement("li")
+
+                label = document.createElement("span")
+                label.textContent = f"{c['brand']} — {c['title']}"
+
+                remove_btn = document.createElement("button")
+                remove_btn.className = "remove-link"
+                remove_btn.textContent = "✕ remove"
+                remove_btn.addEventListener("click", create_proxy(make_remove_handler(c["id"])))
+
+                li.appendChild(label)
+                li.appendChild(remove_btn)
+                list_el.appendChild(li)
+
+            document.getElementById("productCount").textContent = str(len(CANDIDATES))
+            render_dev_panel()
+
+
+        def render_dev_panel():
+            document.getElementById("candidatesJsonPre").textContent = json.dumps(CANDIDATES, indent=2)
+            document.getElementById("systemPromptPre").textContent = SYSTEM_PROMPT
+            if LAST_REQUEST is not None:
+                exchange = {"request": LAST_REQUEST, "response": LAST_RESPONSE}
+                document.getElementById("lastExchangePre").textContent = json.dumps(exchange, indent=2)
+            else:
+                document.getElementById("lastExchangePre").textContent = "No request made yet."
+
+
+        def toggle_dev_mode(event):
+            checked = document.getElementById("devMode").checked
+            panel = document.getElementById("devPanel")
+            panel.style.display = "block" if checked else "none"
+            if checked:
+                render_dev_panel()
+
+
+        def add_product(event):
+            brand = document.getElementById("addBrand").value.strip()
+            title = document.getElementById("addTitle").value.strip()
+            description = document.getElementById("addDescription").value.strip()
+            fit = document.getElementById("addFit").value.strip()
+            size_note = document.getElementById("addSizeNote").value.strip()
+
+            if not title:
+                set_status("Enter at least a product title before adding it.")
+                return
+
+            new_id = f"custom-{len(CANDIDATES) + 1}-{title.lower().replace(' ', '-')[:20]}"
+            CANDIDATES.append({
+                "id": new_id,
+                "brand": brand or "Unknown brand",
+                "title": title,
+                "description": description or "No description provided.",
+                "fit_descriptor": fit or "Not specified - reason from the description only.",
+                "size_chart_note": size_note or "Not provided - no numeric measurements available for this product.",
+            })
+
+            for field_id in ["addBrand", "addTitle", "addDescription", "addFit", "addSizeNote"]:
+                document.getElementById(field_id).value = ""
+
+            set_status(f"Added \"{title}\" to the candidate set.")
+            render_product_list()
+
+
+        def remove_product(candidate_id):
+            global CANDIDATES
+            CANDIDATES[:] = [c for c in CANDIDATES if c["id"] != candidate_id]
+            render_product_list()
+
+
+        def reset_products(event):
+            global CANDIDATES
+            CANDIDATES[:] = [dict(c) for c in DEFAULT_CANDIDATES]
+            set_status("Candidate products reset to defaults.")
+            render_product_list()
 
 
         def render_error(message):
@@ -406,13 +645,7 @@ Return ONLY the JSON, no other text, no markdown code fences."""
 
             if is_sample:
                 sample_banner = document.createElement("div")
-                sample_banner.style.background = "#eef1f4"
-                sample_banner.style.border = "1px solid #d1d5da"
-                sample_banner.style.color = "#444d56"
-                sample_banner.style.borderRadius = "6px"
-                sample_banner.style.padding = "10px 14px"
-                sample_banner.style.fontSize = "13px"
-                sample_banner.style.marginBottom = "16px"
+                sample_banner.className = "sample-banner"
                 sample_banner.textContent = (
                     "📋 This is a real, previously-captured result — not a live call, "
                     "no API key was used."
@@ -459,6 +692,8 @@ Return ONLY the JSON, no other text, no markdown code fences."""
 
 
         async def run_match(event):
+            global LAST_REQUEST, LAST_RESPONSE
+
             run_btn = document.getElementById("runBtn")
             api_key = document.getElementById("apiKey").value.strip()
             constraints = document.getElementById("inputData").value.strip()
@@ -468,6 +703,9 @@ Return ONLY the JSON, no other text, no markdown code fences."""
                 return
             if not constraints:
                 render_error("Enter your fit constraints first.")
+                return
+            if not CANDIDATES:
+                render_error("Add at least one candidate product first (or click Reset to defaults).")
                 return
 
             run_btn.disabled = True
@@ -489,6 +727,9 @@ following the rules in your instructions."""
                 "system": SYSTEM_PROMPT,
                 "messages": [{"role": "user", "content": user_prompt}],
             }
+
+            LAST_REQUEST = payload
+            LAST_RESPONSE = None
 
             headers = {
                 "x-api-key": api_key,
@@ -514,6 +755,10 @@ following the rules in your instructions."""
                 data = await response.json()
                 if hasattr(data, "to_py"):
                     data = data.to_py()
+
+                LAST_RESPONSE = data
+                if document.getElementById("devMode").checked:
+                    render_dev_panel()
 
                 content_blocks = data.get("content", [])
                 if not content_blocks:
@@ -574,8 +819,12 @@ following the rules in your instructions."""
             render_results(SAMPLE_RESULT, is_sample=True)
 
 
+        render_product_list()
         document.getElementById("runBtn").addEventListener("click", create_proxy(run_match))
         document.getElementById("sampleBtn").addEventListener("click", create_proxy(show_sample))
+        document.getElementById("addProductBtn").addEventListener("click", create_proxy(add_product))
+        document.getElementById("resetProductsBtn").addEventListener("click", create_proxy(reset_products))
+        document.getElementById("devMode").addEventListener("change", create_proxy(toggle_dev_mode))
     </script>
 </body>
 
