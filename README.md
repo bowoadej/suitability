@@ -2,6 +2,9 @@
 
 **An agent that decides if a product fits you — not the other way around.**
 
+**[Try the live demo →](https://bowoadej.github.io/suitability/)** — no setup required, includes a
+sample result if you don't want to use your own API key.
+
 ## The Problem
 
 Finding clothes that fit isn't a search problem, it's a matching problem — and most retailer search doesn't solve it. If you have a harder-to-fit body (long torso, narrow shoulders, inconsistent sizing across brands, etc.), the real answer usually lives in a Reddit thread or forum post, not in the product filters.
